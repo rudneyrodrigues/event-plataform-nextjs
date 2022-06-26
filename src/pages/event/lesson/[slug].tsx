@@ -1,20 +1,41 @@
 import Head from "next/head";
-import { GetServerSideProps, NextPage } from "next";
+import { gql, useQuery } from "@apollo/client";
 import { Flex } from "@chakra-ui/react";
+import { GetServerSideProps, NextPage } from "next";
 
 import { Video } from "../../../components/Video";
 import { Header } from "../../../components/Header";
 import { Sidebar } from "../../../components/Sidebar";
+
+const GET_LESSON_BY_SLUG_QUERY = gql`
+  query GetLessonBySlug ($slug: String) {
+    lesson(where: {slug: $slug}) {
+      title
+    }
+  }
+`
+
+interface GetLessonBySlugResponse {
+  lesson: {
+    title: string;
+  }
+}
 
 interface LessonProps {
   slug: string;
 }
 
 const Lesson: NextPage<LessonProps> = ({slug} : LessonProps) => {
+  const { data, loading, error } = useQuery<GetLessonBySlugResponse>(GET_LESSON_BY_SLUG_QUERY, {
+    variables: {
+      slug,
+    },
+  })
+
   return (
     <>
       <Head>
-        <title>Eventos | Ignite Lab</title>
+        <title>{data?.lesson.title} | Ignite Lab</title>
       </Head>
 
       <Flex flexDir="column" minH="100vh">
