@@ -2,11 +2,20 @@ import Head from 'next/head';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { FormEvent, useState } from 'react';
-import { gql, useMutation } from '@apollo/client';
-import { Box, Button, Flex, Image, Input, Text, useToast, Spinner } from '@chakra-ui/react';
+import { gql, useMutation, useQuery } from '@apollo/client';
+import { Box, Button, Flex, Image, Input, Text, useToast, Spinner, Progress, Divider, Link as ChakraLink } from '@chakra-ui/react';
 
 import { Logo } from '../components/Logo';
 import { Footer } from '../components/Footer';
+import Link from 'next/link';
+
+const GET_FIRST_LESSON_QUERY = gql`
+  query GetFirstLesson {
+    lessons(first: 1) {
+      slug
+    }
+  }
+`;
 
 const CREATE_SUBSCRIBER_MUTATION = gql`
   mutation CreateSubscriber ($name: String!, $email: String!) {
@@ -16,6 +25,14 @@ const CREATE_SUBSCRIBER_MUTATION = gql`
   }
 `;
 
+interface LessonProps {
+  lessons: [
+    {
+      slug: string;
+    }
+  ]
+}
+
 const Home: NextPage = () => {
   const toast = useToast();
 
@@ -24,6 +41,7 @@ const Home: NextPage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
+  const {data} = useQuery<LessonProps>(GET_FIRST_LESSON_QUERY);
   const [createSubscriber, { loading }] = useMutation(CREATE_SUBSCRIBER_MUTATION);
 
   const handleSubmit = async (e: FormEvent) => {
@@ -49,7 +67,7 @@ const Home: NextPage = () => {
       },
     })
     .then(() => {
-      router.push('/event');
+      router.push(`event/lesson/${data?.lessons[0].slug}`);
     });
   }
 
@@ -58,6 +76,8 @@ const Home: NextPage = () => {
     <Head>
       <title>Ignite Lab</title>
     </Head>
+
+    <Progress size="xs" color="green" bg="gray.900" isIndeterminate={loading ? true : false} />
 
     <Flex minH="100vh" flexDir="column" align="center" px="1rem" backgroundImage="url('/images/blur-background.png')" backgroundRepeat="no-repeat" backgroundSize="cover" backgroundPosition="top">
       <Flex w="full" maxW="1100px" align="center" justify="space-between" gap="1rem" mt="5rem" mx="auto" flexDir={{
@@ -118,13 +138,29 @@ const Home: NextPage = () => {
               onChange={(e) => setEmail(e.target.value)}
             />
 
-            <Button disabled={loading} type="submit" mt="1rem" p="1rem" fontSize="sm" fontWeight="bold" color="white" bgColor="green.500" h="3.5rem" textTransform="uppercase" opacity={loading ? ".5" : ""} _hover={{
+            <Button disabled={loading || !data} type="submit" mt="1rem" p="1rem" fontSize="sm" fontWeight="bold" color="white" bgColor="green.500" h="3.5rem" textTransform="uppercase" opacity={loading ? ".5" : ""} _hover={{
               bgColor: 'green.700',
             }} _focus={{
               bgColor: 'green.700',
             }}>
-              {loading ? <Spinner size="md" /> : 'Garantir minha vaga'}
+              {loading ? <Spinner size="md" /> : 'Receber notificações'}
             </Button>
+
+            <Divider my="1rem" />
+            
+            <Text fontSize="sm" textAlign="center" mb=".5rem">
+              Ou acesse direto as aulas
+            </Text>
+
+            <Link href={`event/lesson/${data?.lessons[0].slug}`}>
+              <ChakraLink pointerEvents={loading || !data ? "none" : "auto"} opacity={loading ? ".5" : ""} h="3.5rem" border="1px solid" borderColor="blue.500" borderRadius="md" display="flex" alignItems="center" justifyContent="center" textTransform="uppercase" fontSize="sm" fontWeight="bold" color="blue.500" transitionDuration=".2s" _hover={{
+                textDecoration: 'none',
+                bgColor: 'blue.500',
+                color: 'gray.900',
+              }}>
+                {loading ? <Spinner size="md" /> : 'Acessar aulas'}
+              </ChakraLink>
+            </Link>
           </Flex>
         </Box>
       </Flex>
