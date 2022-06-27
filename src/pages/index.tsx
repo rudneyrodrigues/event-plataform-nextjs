@@ -1,62 +1,24 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import type { NextPage } from 'next';
-import { useRouter } from 'next/router';
-import { FormEvent, useEffect, useState } from 'react';
-import { Box, Button, Flex, Image, Input, Text, useToast, Spinner, Progress, Divider, Link as ChakraLink, Icon, IconButton } from '@chakra-ui/react';
 import { useSession, signIn, signOut } from 'next-auth/react';
+import { Box, Button, Flex, Image, Text, Divider, Link as ChakraLink, Icon, IconButton } from '@chakra-ui/react';
 
 import { Logo } from '../components/Logo';
 import { Footer } from '../components/Footer';
-import { useCreateSubscriberMutation, useGetFirstLessonQuery } from '../graphql/generated';
+import { useGetFirstLessonQuery } from '../graphql/generated';
 import { GithubLogo, SignOut } from 'phosphor-react';
 
 const Home: NextPage = () => {
-  const toast = useToast();
   const { data: session } = useSession();
 
-  const router = useRouter();
-
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-
   const {data} = useGetFirstLessonQuery();
-  const [createSubscriber, { loading }] = useCreateSubscriberMutation();
-
-  // const handleSubmit = async (e: FormEvent) => {
-  //   e.preventDefault();
-
-  //   if (!name || !email) {
-  //     return (
-  //       toast({
-  //         position: 'top',
-  //         render: () => (
-  //           <Box bg="red.500" p={3} color="white" borderRadius="md">
-  //             <Text>Nome e e-mail obrigatórios</Text>
-  //           </Box>
-  //         ),
-  //       })
-  //     );
-  //   }
-
-  //   await createSubscriber({
-  //     variables: {
-  //       name,
-  //       email,
-  //     },
-  //   })
-  //   .then(() => {
-  //     router.push(`event/lesson/${data?.lessons[0].slug}`);
-  //   });
-  // }
 
  return (
   <>
     <Head>
       <title>Ignite Lab</title>
     </Head>
-
-    <Progress size="xs" color="green" bg="gray.900" isIndeterminate={loading ? true : false} />
 
     <Flex minH="100vh" flexDir="column" align="center" px="1rem" backgroundImage="url('/images/blur-background.png')" backgroundRepeat="no-repeat" backgroundSize="cover" backgroundPosition="top">
       <Flex w="full" maxW="1100px" align="center" justify="space-between" gap="1rem" mt="5rem" mx="auto" flexDir={{
@@ -112,7 +74,10 @@ const Home: NextPage = () => {
           </Text>
           
           <Flex flexDir="column" gap=".5rem" w="full" mt="1.5rem">
-            <Text>
+            <Text textAlign={{
+              base: 'center',
+              lg: 'left',
+            }}>
               {session?.user ? (
                 "Você pode acessar todas as aulas disponíveis através desse botão"
               ) : (
@@ -122,7 +87,7 @@ const Home: NextPage = () => {
 
             {session?.user ? (
               <Link href={`event/lesson/${data?.lessons[0].slug}`}>
-                <ChakraLink opacity={loading ? ".5" : ""} h="3.5rem" border="1px solid" borderColor="blue.500" borderRadius="md" display="flex" alignItems="center" justifyContent="center" textTransform="uppercase" fontSize="sm" fontWeight="bold" color="blue.500" mt=".5rem" transitionDuration=".2s" _hover={{
+                <ChakraLink pointerEvents={!data ? "none" : "auto"} h="3.5rem" border="1px solid" borderColor="blue.500" borderRadius="md" display="flex" alignItems="center" justifyContent="center" textTransform="uppercase" fontSize="sm" fontWeight="bold" color="blue.500" mt=".5rem" transitionDuration=".2s" _hover={{
                   textDecoration: 'none',
                   bgColor: 'blue.500',
                   color: 'gray.900',
