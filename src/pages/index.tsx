@@ -122,7 +122,7 @@ const Home: NextPage = () => {
 
             {session?.user ? (
               <Link href={`event/lesson/${data?.lessons[0].slug}`}>
-                <ChakraLink pointerEvents={loading || !data ? "none" : "auto"} opacity={loading ? ".5" : ""} h="3.5rem" border="1px solid" borderColor="blue.500" borderRadius="md" display="flex" alignItems="center" justifyContent="center" textTransform="uppercase" fontSize="sm" fontWeight="bold" color="blue.500" mt=".5rem" transitionDuration=".2s" _hover={{
+                <ChakraLink opacity={loading ? ".5" : ""} h="3.5rem" border="1px solid" borderColor="blue.500" borderRadius="md" display="flex" alignItems="center" justifyContent="center" textTransform="uppercase" fontSize="sm" fontWeight="bold" color="blue.500" mt=".5rem" transitionDuration=".2s" _hover={{
                   textDecoration: 'none',
                   bgColor: 'blue.500',
                   color: 'gray.900',
