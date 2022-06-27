@@ -1,0 +1,16 @@
+schema: https://api-sa-east-1.graphcms.com/v2/cl4p2rqg81knf01xshxd9dcah/master
+
+documents: './src/graphql/**/*.graphql'
+
+generates:
+  ./src/graphql/generated.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo
+    config:
+      fetcher: fetch
+      reactApolloVersion: 3
+      withHooks: true # Cria de forma automática um hook para cada Query ou Mutation
+      withHOC: false
+      withComponent: false

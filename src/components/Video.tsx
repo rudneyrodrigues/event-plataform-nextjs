@@ -1,44 +1,16 @@
-import { gql, useQuery } from '@apollo/client';
 import Youtube, { YouTubeProps } from 'react-youtube';
 import { AspectRatio, Avatar, Box, Flex, Link, SimpleGrid, Skeleton, SkeletonText, Text } from "@chakra-ui/react";
 import { CaretRight, DiscordLogo, FileArrowDown, Lightning, Image } from "phosphor-react";
 
 import { Footer } from "./Footer";
-
-const GET_LESSON_BY_SLUG_QUERY = gql`
-  query GetLessonBySlug ($slug: String) {
-    lesson(where: {slug: $slug}) {
-      title
-      videoId
-      description
-      teacher {
-        name
-        bio
-        avatarURL
-      }
-    }
-  }
-`
-
-interface GetLessonBySlugResponse {
-  lesson: {
-    title: string;
-    videoId: string;
-    description: string;
-    teacher: {
-      name: string;
-      bio: string;
-      avatarURL: string;
-    };
-  }
-}
+import { useGetLessonBySlugQuery } from '../graphql/generated';
 
 interface VideoProps {
   lessonSlug: string;
 }
 
 export const Video = ({ lessonSlug }: VideoProps) => {
-  const { data, loading, error } = useQuery<GetLessonBySlugResponse>(GET_LESSON_BY_SLUG_QUERY, {
+  const { data, loading, error } = useGetLessonBySlugQuery({
     variables: {
       slug: lessonSlug,
     },
@@ -54,7 +26,7 @@ export const Video = ({ lessonSlug }: VideoProps) => {
     width: '100%',
   };
 
-  if (!data || loading) {
+  if (!data || !data.lesson || loading) {
     return (
       <Box flex="1" mt="2rem">
         <Flex justify="center">
@@ -110,21 +82,23 @@ export const Video = ({ lessonSlug }: VideoProps) => {
                 }} gap="1rem" mt="1.5rem">
                   <Avatar size="lg" name="Rudney Rodrigues" src="https://avatars.githubusercontent.com/u/68288226?v=4" />
 
-                  <Box lineHeight="1.625">
-                    <Text fontSize="2xl" color="gray.100" fontWeight="bold" textAlign={{
-                      base: "center",
-                      sm: "left",
-                    }}>
-                      {data.lesson.teacher.name}
-                    </Text>
+                  {data.lesson.teacher && (
+                    <Box lineHeight="1.625">
+                      <Text fontSize="2xl" color="gray.100" fontWeight="bold" textAlign={{
+                        base: "center",
+                        sm: "left",
+                      }}>
+                        {data.lesson.teacher.name}
+                      </Text>
 
-                    <Text fontSize="sm" color="gray.200" textAlign={{
-                      base: "center",
-                      sm: "left",
-                    }}>
-                      {data.lesson.teacher.bio}
-                    </Text>
-                  </Box>
+                      <Text fontSize="sm" color="gray.200" textAlign={{
+                        base: "center",
+                        sm: "left",
+                      }}>
+                        {data.lesson.teacher.bio}
+                      </Text>
+                    </Box>
+                  )}
                 </Flex>
               </Box>
 

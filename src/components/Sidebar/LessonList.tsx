@@ -1,34 +1,10 @@
 import { Flex, Spinner, Text } from "@chakra-ui/react";
-import { gql, useQuery } from '@apollo/client';
 
 import { Lesson } from "./Lesson";
-
-const GET_LESSONS_QUERY = gql`
-  query MyQuery {
-    lessons(orderBy: availableAt_ASC, stage: PUBLISHED) {
-      id
-      lessonType
-      availableAt
-      title
-      slug
-    }
-  }
-`;
-
-interface LessonProps {
-  id: string;
-  lessonType: "live" | "class";
-  availableAt: string;
-  title: string;
-  slug: string;
-}
-
-interface GetLessonsQueryResponse {
-  lessons: LessonProps[];
-}
+import { useGetLessonsQuery } from "../../graphql/generated";
 
 export const LessonList = () => {
-  const { loading, error, data } = useQuery<GetLessonsQueryResponse>(GET_LESSONS_QUERY);
+  const { loading, error, data } = useGetLessonsQuery();
 
   return (
     <>

@@ -3,35 +3,11 @@ import Link from 'next/link';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { FormEvent, useState } from 'react';
-import { gql, useMutation, useQuery } from '@apollo/client';
 import { Box, Button, Flex, Image, Input, Text, useToast, Spinner, Progress, Divider, Link as ChakraLink } from '@chakra-ui/react';
 
 import { Logo } from '../components/Logo';
 import { Footer } from '../components/Footer';
-
-const GET_FIRST_LESSON_QUERY = gql`
-  query GetFirstLesson {
-    lessons(first: 1) {
-      slug
-    }
-  }
-`;
-
-const CREATE_SUBSCRIBER_MUTATION = gql`
-  mutation CreateSubscriber ($name: String!, $email: String!) {
-    createSubscriber(data: {name: $name, email: $email}) {
-      id
-    }
-  }
-`;
-
-interface LessonProps {
-  lessons: [
-    {
-      slug: string;
-    }
-  ]
-}
+import { useCreateSubscriberMutation, useGetFirstLessonQuery } from '../graphql/generated';
 
 const Home: NextPage = () => {
   const toast = useToast();
@@ -41,8 +17,8 @@ const Home: NextPage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
-  const {data} = useQuery<LessonProps>(GET_FIRST_LESSON_QUERY);
-  const [createSubscriber, { loading }] = useMutation(CREATE_SUBSCRIBER_MUTATION);
+  const {data} = useGetFirstLessonQuery();
+  const [createSubscriber, { loading }] = useCreateSubscriberMutation();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
