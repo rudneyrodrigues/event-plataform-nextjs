@@ -4,6 +4,8 @@
 -  [ ] NextJS
 -  [ ] Typescript
 -  [ ] Chakra UI
+-  [ ] Next-Auth
+-  [ ] Github OAuth App
 -  [ ] Headless CMS (Content Management System) com graphcms
 -  [ ] @apollo/client and Graphql
 -  [ ] svg2jsx para gerar um componente SVG (https://svg2jsx.com/)
@@ -22,6 +24,18 @@ Pelo seu terminal navegue até a pasta do projeto e execute:
   yarn dev
 ```
 
+Lembre-se de adicionar as Environment Variables no projeto:
+
+```cl
+  GITHUB_ID
+  GITHUB_SECRET
+
+  NEXTAUTH_URL
+  NEXTAUTH_SECRET
+
+  NEXT_PUBLIC_VITE_API_URL
+  NEXT_PUBLIC_VITE_API_ACCESS_TOKEN
+```
 
 ## Contato
 
