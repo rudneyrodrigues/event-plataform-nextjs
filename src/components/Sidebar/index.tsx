@@ -1,8 +1,8 @@
-import { GithubLogo, SignOut } from "phosphor-react";
-import { signOut, useSession } from "next-auth/react";
-import { Box, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay, Flex, Icon, IconButton, Text, Tooltip, useBreakpointValue } from "@chakra-ui/react";
+import { useSession } from "next-auth/react";
+import { Box, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay, Text, useBreakpointValue } from "@chakra-ui/react";
 
 import { LessonList } from "./LessonList";
+import { ButtonSignOut } from "../ButtonSignOut";
 import { useSidebarDrawer } from "../../context/SidebarDrawerContext";
 
 export const Sidebar = () => {
@@ -25,15 +25,7 @@ export const Sidebar = () => {
 
             <DrawerBody display="flex" flexDir="column" gap="1.5rem">
               {session?.user && (
-                <Flex h="3.5rem" bgColor="gray.900" align="center" justify="space-between" gap=".5rem" p="1rem" borderRadius="md">
-                  <Icon as={GithubLogo} w="1.5rem" h="1.5rem" />
-                  <Text textAlign="center" noOfLines={1}>
-                    {session.user.name}
-                  </Text>
-                  <Tooltip label="Sair">
-                    <IconButton aria-label="Sair" size="md" icon={<SignOut size={18} />} onClick={() => signOut()} colorScheme="red" />
-                  </Tooltip>
-                </Flex>
+                <ButtonSignOut />
               )}
               <LessonList />
             </DrawerBody>

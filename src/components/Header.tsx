@@ -1,10 +1,10 @@
+import { useSession } from "next-auth/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
-import { GithubLogo, SignOut } from "phosphor-react";
-import { signOut, useSession } from "next-auth/react";
 import { useSidebarDrawer } from "../context/SidebarDrawerContext";
-import { Box, Flex, Icon, IconButton, Text, useBreakpointValue } from "@chakra-ui/react";
+import { Box, Flex, IconButton, useBreakpointValue } from "@chakra-ui/react";
 
 import { Logo } from "./Logo";
+import { ButtonSignOut } from "./ButtonSignOut";
 
 export const Header = () => {
   const { onOpen } = useSidebarDrawer();
@@ -25,13 +25,7 @@ export const Header = () => {
             {!isDrawerSidebar && (
               <>
                 {session?.user && (
-                  <Flex h="3.5rem" bgColor="gray.900" align="center" justify="space-between" gap=".5rem" p="1rem" borderRadius="md">
-                    <Icon as={GithubLogo} w="1.5rem" h="1.5rem" />
-                    <Text textAlign="center" noOfLines={1}>
-                      {session.user.name}
-                    </Text>
-                    <IconButton aria-label="Sair" size="md" icon={<SignOut size={18} />} onClick={() => signOut()} colorScheme="red" />
-                  </Flex>
+                  <ButtonSignOut />
                 )}
               </>
             )}
