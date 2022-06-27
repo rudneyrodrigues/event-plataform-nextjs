@@ -2,15 +2,18 @@ import Head from 'next/head';
 import Link from 'next/link';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { FormEvent, useState } from 'react';
-import { Box, Button, Flex, Image, Input, Text, useToast, Spinner, Progress, Divider, Link as ChakraLink } from '@chakra-ui/react';
+import { FormEvent, useEffect, useState } from 'react';
+import { Box, Button, Flex, Image, Input, Text, useToast, Spinner, Progress, Divider, Link as ChakraLink, Icon, IconButton } from '@chakra-ui/react';
+import { useSession, signIn, signOut } from 'next-auth/react';
 
 import { Logo } from '../components/Logo';
 import { Footer } from '../components/Footer';
 import { useCreateSubscriberMutation, useGetFirstLessonQuery } from '../graphql/generated';
+import { GithubLogo, SignOut } from 'phosphor-react';
 
 const Home: NextPage = () => {
   const toast = useToast();
+  const { data: session } = useSession();
 
   const router = useRouter();
 
@@ -20,32 +23,32 @@ const Home: NextPage = () => {
   const {data} = useGetFirstLessonQuery();
   const [createSubscriber, { loading }] = useCreateSubscriberMutation();
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  // const handleSubmit = async (e: FormEvent) => {
+  //   e.preventDefault();
 
-    if (!name || !email) {
-      return (
-        toast({
-          position: 'top',
-          render: () => (
-            <Box bg="red.500" p={3} color="white" borderRadius="md">
-              <Text>Nome e e-mail obrigatórios</Text>
-            </Box>
-          ),
-        })
-      );
-    }
+  //   if (!name || !email) {
+  //     return (
+  //       toast({
+  //         position: 'top',
+  //         render: () => (
+  //           <Box bg="red.500" p={3} color="white" borderRadius="md">
+  //             <Text>Nome e e-mail obrigatórios</Text>
+  //           </Box>
+  //         ),
+  //       })
+  //     );
+  //   }
 
-    await createSubscriber({
-      variables: {
-        name,
-        email,
-      },
-    })
-    .then(() => {
-      router.push(`event/lesson/${data?.lessons[0].slug}`);
-    });
-  }
+  //   await createSubscriber({
+  //     variables: {
+  //       name,
+  //       email,
+  //     },
+  //   })
+  //   .then(() => {
+  //     router.push(`event/lesson/${data?.lessons[0].slug}`);
+  //   });
+  // }
 
  return (
   <>
@@ -93,7 +96,7 @@ const Home: NextPage = () => {
           base: '1.5rem',
           lg: 'auto',
         }}>
-          <Text as="strong" fontSize={{
+          <Text as="strong" noOfLines={2} fontSize={{
             base: 'lg',
             md: 'xl',
             lg: '2xl',
@@ -101,42 +104,58 @@ const Home: NextPage = () => {
             base: 'center',
             lg: 'left',
           }}>
-            Inscreva-se gratuitamente
+            {session?.user ? (
+              `Bem vindo ${session.user.name}`
+            ) : (
+              "Inscreva-se gratuitamente"
+            )}
           </Text>
-
-          <Flex as="form" onSubmit={handleSubmit} flexDir="column" gap=".5rem" w="full" mt="1.5rem">
-            <Input type="text" name="name" placeholder="Seu nome completo" bgColor="gray.900" px="1.25rem" h="3.5rem"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <Input type="text" name="email" placeholder="Digite seu email" bgColor="gray.900" px="1.25rem" h="3.5rem"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-
-            <Button disabled={loading || !data} type="submit" mt="1rem" p="1rem" fontSize="sm" fontWeight="bold" color="white" bgColor="green.500" h="3.5rem" textTransform="uppercase" opacity={loading ? ".5" : ""} _hover={{
-              bgColor: 'green.700',
-            }} _focus={{
-              bgColor: 'green.700',
-            }}>
-              {loading ? <Spinner size="md" /> : 'Receber notificações'}
-            </Button>
-
-            <Divider my="1rem" />
-            
-            <Text fontSize="sm" textAlign="center" mb=".5rem">
-              Ou acesse direto as aulas
+          
+          <Flex flexDir="column" gap=".5rem" w="full" mt="1.5rem">
+            <Text>
+              {session?.user ? (
+                "Você pode acessar todas as aulas disponíveis através desse botão"
+              ) : (
+                "Faça login com o Github para ter acesso a todas as aulas"
+              )}
             </Text>
 
-            <Link href={`event/lesson/${data?.lessons[0].slug}`}>
-              <ChakraLink pointerEvents={loading || !data ? "none" : "auto"} opacity={loading ? ".5" : ""} h="3.5rem" border="1px solid" borderColor="blue.500" borderRadius="md" display="flex" alignItems="center" justifyContent="center" textTransform="uppercase" fontSize="sm" fontWeight="bold" color="blue.500" transitionDuration=".2s" _hover={{
-                textDecoration: 'none',
-                bgColor: 'blue.500',
-                color: 'gray.900',
+            {session?.user ? (
+              <Link href={`event/lesson/${data?.lessons[0].slug}`}>
+                <ChakraLink pointerEvents={loading || !data ? "none" : "auto"} opacity={loading ? ".5" : ""} h="3.5rem" border="1px solid" borderColor="blue.500" borderRadius="md" display="flex" alignItems="center" justifyContent="center" textTransform="uppercase" fontSize="sm" fontWeight="bold" color="blue.500" mt=".5rem" transitionDuration=".2s" _hover={{
+                  textDecoration: 'none',
+                  bgColor: 'blue.500',
+                  color: 'gray.900',
+                }}>
+                  Acessar aulas
+                </ChakraLink>
+              </Link>
+            ) : (
+              <Button mt="1rem" p="1rem" fontSize="sm" fontWeight="bold" color="white" bgColor="green.500" h="3.5rem" textTransform="uppercase" display="flex" alignItems="center" justifyContent="center" gap=".5rem" onClick={() => signIn("github")} _hover={{
+                bgColor: 'green.700',
+              }} _focus={{
+                bgColor: 'green.700',
               }}>
-                Acessar aulas
-              </ChakraLink>
-            </Link>
+                <Icon as={GithubLogo} w="1.5rem" h="1.5rem" />
+                <Text noOfLines={1}>
+                  Github
+                </Text>
+              </Button>
+            )}
+
+            {session?.user && (
+              <>
+                <Divider my="1rem" />
+
+                <Flex h="3.5rem" bgColor="gray.900" align="center" justify="space-between" gap=".5rem" p="1rem" borderRadius="md">
+                  <Icon as={GithubLogo} w="1.5rem" h="1.5rem" />
+                  <Text textAlign="center" noOfLines={1}>
+                    {session.user.name}
+                  </Text>
+                  <IconButton aria-label="Sair" size="md" icon={<SignOut size={18} />} onClick={() => signOut()} colorScheme="red" />
+                </Flex>
+              </>
+            )}
           </Flex>
         </Box>
       </Flex>

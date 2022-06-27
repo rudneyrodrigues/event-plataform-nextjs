@@ -1,7 +1,10 @@
 import Head from "next/head";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 import { gql, useQuery } from "@apollo/client";
-import { Flex } from "@chakra-ui/react";
-import { GetServerSideProps, GetStaticPaths, GetStaticProps, NextPage } from "next";
+import { Flex, Progress, Text } from "@chakra-ui/react";
+import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 
 import { Video } from "../../../components/Video";
 import { Header } from "../../../components/Header";
@@ -26,10 +29,19 @@ interface LessonProps {
 }
 
 const Lesson: NextPage<LessonProps> = ({slug} : LessonProps) => {
+  const { data: session } = useSession();
+  const router = useRouter();
+
   const { data, loading, error } = useQuery<GetLessonBySlugResponse>(GET_LESSON_BY_SLUG_QUERY, {
     variables: {
       slug,
     },
+  })
+
+  useEffect(() => {
+    if (!session?.user) {
+      router.push('/')
+    }
   })
 
   return (
@@ -41,10 +53,20 @@ const Lesson: NextPage<LessonProps> = ({slug} : LessonProps) => {
       <Flex flexDir="column" minH="100vh">
         <Header />
 
+        {loading && (
+          <Progress color="green" bgColor="gray.700" size="xs" isIndeterminate={loading ? true : false} />
+        )}
+
         <Flex flex="1" w="full" maxW="container.xl" mx="auto" gap="1rem" display={{
           lg: "flex",
         }}>
-          <Video lessonSlug={slug} />
+          {error ? (
+            <Flex flex="1" align="center" justify="center">
+              <Text>Erro ao carregar aula</Text>
+            </Flex>
+          ) : (
+            <Video lessonSlug={slug} />
+          )}
 
           <Sidebar />
         </Flex>
@@ -55,16 +77,6 @@ const Lesson: NextPage<LessonProps> = ({slug} : LessonProps) => {
 
 export default Lesson;
 
-// export const getServerSideProps: GetServerSideProps = async ({ params }: any) => {
-//   const { slug } = params;
-
-//   return {
-//     props: {
-//       slug,
-//     },
-//   }
-// }
-
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
     paths: [],
@@ -72,8 +84,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 }
 
-export const getStaticProps: GetStaticProps = async ({ params }: any) => {
+export const getStaticProps: GetStaticProps = ({ params }: any) => {
   const thirtyMinutes = 30 * 60;
+
   const { slug } = params;
 
   return {
