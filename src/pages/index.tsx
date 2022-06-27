@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Link from 'next/link';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { FormEvent, useState } from 'react';
@@ -7,7 +8,6 @@ import { Box, Button, Flex, Image, Input, Text, useToast, Spinner, Progress, Div
 
 import { Logo } from '../components/Logo';
 import { Footer } from '../components/Footer';
-import Link from 'next/link';
 
 const GET_FIRST_LESSON_QUERY = gql`
   query GetFirstLesson {
@@ -158,7 +158,7 @@ const Home: NextPage = () => {
                 bgColor: 'blue.500',
                 color: 'gray.900',
               }}>
-                {loading ? <Spinner size="md" /> : 'Acessar aulas'}
+                Acessar aulas
               </ChakraLink>
             </Link>
           </Flex>

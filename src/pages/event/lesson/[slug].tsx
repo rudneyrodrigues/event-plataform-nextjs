@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { gql, useQuery } from "@apollo/client";
 import { Flex } from "@chakra-ui/react";
-import { GetServerSideProps, NextPage } from "next";
+import { GetServerSideProps, GetStaticPaths, GetStaticProps, NextPage } from "next";
 
 import { Video } from "../../../components/Video";
 import { Header } from "../../../components/Header";
@@ -35,7 +35,7 @@ const Lesson: NextPage<LessonProps> = ({slug} : LessonProps) => {
   return (
     <>
       <Head>
-        <title>{data?.lesson.title} | Ignite Lab</title>
+        <title>{`${data?.lesson.title} | Ignite Lab`}</title>
       </Head>
 
       <Flex flexDir="column" minH="100vh">
@@ -55,12 +55,31 @@ const Lesson: NextPage<LessonProps> = ({slug} : LessonProps) => {
 
 export default Lesson;
 
-export const getServerSideProps: GetServerSideProps = async ({ params }: any) => {
+// export const getServerSideProps: GetServerSideProps = async ({ params }: any) => {
+//   const { slug } = params;
+
+//   return {
+//     props: {
+//       slug,
+//     },
+//   }
+// }
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: 'blocking'
+  }
+}
+
+export const getStaticProps: GetStaticProps = async ({ params }: any) => {
+  const thirtyMinutes = 30 * 60;
   const { slug } = params;
 
   return {
     props: {
       slug,
     },
+    revalidate: thirtyMinutes,
   }
 }
