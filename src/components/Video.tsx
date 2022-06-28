@@ -1,6 +1,6 @@
 import Youtube, { YouTubeProps } from 'react-youtube';
 import { AspectRatio, Avatar, Box, Flex, Link, SimpleGrid, Skeleton, SkeletonText, Text } from "@chakra-ui/react";
-import { CaretRight, DiscordLogo, FileArrowDown, Lightning, Image } from "phosphor-react";
+import { CaretRight, DiscordLogo, FileArrowDown, Lightning, Image, Code } from "phosphor-react";
 
 import { Footer } from "./Footer";
 import { useGetLessonBySlugQuery } from '../graphql/generated';
@@ -24,6 +24,10 @@ export const Video = ({ lessonSlug }: VideoProps) => {
   const opts: YouTubeProps['opts'] = {
     height: '100%',
     width: '100%',
+    playerVars: {
+      disablekb: 1,
+      fs: 0,
+    },
   };
 
   if (!data || !data.lesson || loading) {
@@ -52,7 +56,7 @@ export const Video = ({ lessonSlug }: VideoProps) => {
         <Box flex="1" mt="2rem">
           <Flex justify="center">
             <AspectRatio w="full" h="full" maxW="1100px" maxH="60vh" ratio={16 / 9}>
-              <Youtube videoId={data.lesson.videoId} opts={opts} onReady={onPlayerReady} />
+              <Youtube videoId={data.lesson.videoId} id={data.lesson.videoId} opts={opts} onReady={onPlayerReady} />
             </AspectRatio>
           </Flex>
           
@@ -106,17 +110,17 @@ export const Video = ({ lessonSlug }: VideoProps) => {
                 base: "full",
                 xl: "auto"
               }} minChildWidth="237px" spacing="1rem">
-                <Link href="" isExternal p="1rem" fontSize="sm" fontWeight="bold" bg="green.500" display="flex" alignItems="center" justifyContent="center" gap=".5rem" borderRadius="md" textTransform="uppercase" w={{
+                <Link href="https://www.fronteditor.dev/" isExternal p="1rem" fontSize="sm" fontWeight="bold" bg="green.500" display="flex" alignItems="center" justifyContent="center" gap=".5rem" borderRadius="md" textTransform="uppercase" w={{
                   base: "full",
                   lg: "auto",
                 }} _hover={{
                   bg: "green.700",
                 }}>
-                  <DiscordLogo size={24} />
-                  Comunidade do Discord
+                  <Code size={24} />
+                  Acesso o editor
                 </Link>
 
-                <Link href="" isExternal p="1rem" fontSize="sm" fontWeight="bold" display="flex" alignItems="center" justifyContent="center" gap=".5rem" borderRadius="md" textTransform="uppercase" color="blue.500" border="1px solid" borderColor="blue.500" w={{
+                <Link cursor="not-allowed" isExternal p="1rem" fontSize="sm" fontWeight="bold" display="flex" alignItems="center" justifyContent="center" gap=".5rem" borderRadius="md" textTransform="uppercase" color="blue.500" border="1px solid" borderColor="blue.500" w={{
                   base: "full",
                   lg: "auto",
                 }} _hover={{

@@ -1,11 +1,12 @@
 import type { AppProps } from 'next/app';
-import { ChakraProvider } from '@chakra-ui/react';
-
-import { theme } from '../styles/theme';
-import { SidebarDrawProvider } from '../context/SidebarDrawerContext';
 import { ApolloProvider } from '@apollo/client';
-import { client } from '../lib/apollo';
+import { ChakraProvider } from '@chakra-ui/react';
 import { SessionProvider } from 'next-auth/react';
+
+import { client } from '../lib/apollo';
+import { theme } from '../styles/theme';
+import { Loading } from '../components/Loading';
+import { SidebarDrawProvider } from '../context/SidebarDrawerContext';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -13,6 +14,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <ChakraProvider theme={theme}>
         <ApolloProvider client={client}>
           <SidebarDrawProvider>
+            <Loading />
             <Component {...pageProps} />
           </SidebarDrawProvider>
         </ApolloProvider>

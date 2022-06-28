@@ -1,14 +1,15 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import type { NextPage } from 'next';
-import { GithubLogo } from 'phosphor-react';
-import { useSession, signIn } from 'next-auth/react';
+import type { GetServerSideProps, NextPage } from 'next';
+import { GithubLogo, GoogleLogo } from 'phosphor-react';
+import { useSession, signIn, getSession } from 'next-auth/react';
 import { Box, Button, Flex, Image, Text, Divider, Link as ChakraLink, Icon } from '@chakra-ui/react';
 
 import { Logo } from '../components/Logo';
 import { Footer } from '../components/Footer';
 import { ButtonSignOut } from '../components/ButtonSignOut';
 import { useGetFirstLessonQuery } from '../graphql/generated';
+import { GraphQLClient } from 'graphql-request';
 
 const Home: NextPage = () => {
   const { data: session } = useSession();
@@ -82,7 +83,7 @@ const Home: NextPage = () => {
                 {session?.user ? (
                   "Você pode acessar todas as aulas disponíveis através desse botão"
                 ) : (
-                  "Faça login com o Github para ter acesso a todas as aulas"
+                  "Faça login com o Github ou Google para ter acesso a todas as aulas"
                 )}
               </Text>
 
@@ -97,16 +98,31 @@ const Home: NextPage = () => {
                   </ChakraLink>
                 </Link>
               ) : (
-                <Button mt="1rem" p="1rem" fontSize="sm" fontWeight="bold" color="white" bgColor="green.500" h="3.5rem" textTransform="uppercase" display="flex" alignItems="center" justifyContent="center" gap=".5rem" onClick={() => signIn("github")} _hover={{
-                  bgColor: 'green.700',
-                }} _focus={{
-                  bgColor: 'green.700',
-                }}>
-                  <Icon as={GithubLogo} w="1.5rem" h="1.5rem" />
-                  <Text noOfLines={1}>
-                    Github
-                  </Text>
-                </Button>
+                <Flex flexDir="column" gap=".5rem">
+                  <Button mt="1rem" p="1rem" fontSize="sm" fontWeight="bold" color="white" bgColor="green.500" h="3.5rem" textTransform="uppercase" display="flex" alignItems="center" justifyContent="center" gap=".5rem" onClick={() => signIn("github")} _hover={{
+                    bgColor: 'green.700',
+                  }} _focus={{
+                    bgColor: 'green.700',
+                  }}>
+                    <Icon as={GithubLogo} w="1.5rem" h="1.5rem" />
+                    <Text noOfLines={1}>
+                      Acessar com o Github
+                    </Text>
+                  </Button>
+
+                  <Button mt="1rem" p="1rem" fontSize="sm" fontWeight="bold" color="white" bgColor="transparent" h="3.5rem" textTransform="uppercase" display="flex" alignItems="center" border="1px solid" borderColor="blue.500" justifyContent="center" gap=".5rem" onClick={() => signIn("google")} _hover={{
+                    bgColor: 'blue.500',
+                    color: 'gray.900'
+                  }} _focus={{
+                    bgColor: 'blue.500',
+                    color: 'gray.900'
+                  }}>
+                    <Icon as={GoogleLogo} w="1.5rem" h="1.5rem" />
+                    <Text noOfLines={1}>
+                    Acessar com o Google
+                    </Text>
+                  </Button>
+                </Flex>
               )}
 
               {session?.user && (
@@ -129,3 +145,32 @@ const Home: NextPage = () => {
 }
 
 export default Home;
+
+export const getServerSideProps: GetServerSideProps = async ({req}: any) => {
+  const session = await getSession({ req });
+
+  const graphcms = new GraphQLClient(
+    "https://api-sa-east-1.graphcms.com/v2/cl4p2rqg81knf01xshxd9dcah/master",
+  );
+
+  const data = await graphcms.request(`
+    query GetFirstLesson {
+      lessons(first: 1) {
+        slug
+      }
+    }
+  `)
+
+  if (session) {
+    return {
+      redirect: {
+        destination: `/event/lesson/${data?.lessons[0].slug}`,
+        permanent: false,
+      }
+    }
+  }
+
+  return {
+    props: {}
+  }
+}
