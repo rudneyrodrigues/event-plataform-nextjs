@@ -37,5 +37,5 @@ export const theme = extendTheme({
         color: 'gray.100',
       }
     },
-  }
+  },
 });

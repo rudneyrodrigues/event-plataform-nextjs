@@ -38,7 +38,7 @@ export const Lesson = ({
         } : {
           textDecoration: "none",
         }}>
-          <Box borderRadius="md" border="1px solid" borderColor="gray.500" p="1rem" transitionDuration=".2s" bgColor={isActiveLesson ? "green.500" : ""} _hover={{
+          <Box borderRadius="md" border="1px solid" borderColor={isActiveLesson ? "green.500" : "gray.500"} p="1rem" transitionDuration=".2s" bgColor={isActiveLesson ? "green.500" : ""} _hover={{
             borderColor: "green.500",
           }}>
             <Flex as="header" align="center" justify="space-between" gap="2">

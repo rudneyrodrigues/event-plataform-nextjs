@@ -23,7 +23,7 @@ export const Loading = () => {
   })
 
   return loading ? (
-    <Progress size="xs" colorScheme="green" isIndeterminate />
+    <Progress size="xs" bgColor="gray.700" colorScheme="green" isIndeterminate />
   ) : (
     <></>
   )

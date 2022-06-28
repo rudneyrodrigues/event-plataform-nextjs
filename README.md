@@ -1,15 +1,18 @@
 ![App Screenshot](.github/cover.png)
 
 ## ✨ Stack
--  [ ] NextJS
--  [ ] Typescript
--  [ ] Chakra UI
--  [ ] Next-Auth
--  [ ] Github OAuth App
--  [ ] Headless CMS (Content Management System) com graphcms
--  [ ] @apollo/client and Graphql
--  [ ] svg2jsx para gerar um componente SVG (https://svg2jsx.com/)
--  [ ] Phosphor icon family (https://phosphoricons.com/)
+-  [X] Typescript
+-  [X] Headless CMS (Content Management System) com graphcms
+-  [X] @apollo/client and Graphql
+-  [X] svg2jsx para gerar um componente SVG (https://svg2jsx.com/)
+-  [X] Phosphor icon family (https://phosphoricons.com/)
+
+## 📌 News included in the project
+-  [X] NextJS
+-  [X] Chakra UI
+-  [X] Next-Auth
+-  [X] Login with **Github**
+-  [X] Login with **Google**
 
 ## 🔖 Layout
 
@@ -42,3 +45,5 @@ Lembre-se de adicionar as Environment Variables no projeto:
 Siga-me no Linkedin, estou sempre por lá.
 
 ![Linkedin Badge](https://img.shields.io/badge/-Rudney%20Rodrigues-6633cc?style=flat-square&logo=Linkedin&logoColor=white&link=https://www.linkedin.com/in/rudney.rodrigues.3/)
+
+![Instagram Badge](https://img.shields.io/badge/-Rudney%20Rodrigues-3f729b?style=flat-square&logo=Instagram&logoColor=white&link=https://www.instagram.com/rudney.rodrigues.3/)

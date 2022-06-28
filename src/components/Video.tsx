@@ -1,15 +1,18 @@
 import Youtube, { YouTubeProps } from 'react-youtube';
-import { AspectRatio, Avatar, Box, Flex, Link, SimpleGrid, Skeleton, SkeletonText, Text } from "@chakra-ui/react";
-import { CaretRight, DiscordLogo, FileArrowDown, Lightning, Image, Code } from "phosphor-react";
+import { CaretRight, FileArrowDown, Lightning, Image, DotsThreeOutline, ArrowUp, Terminal } from "phosphor-react";
+import { AspectRatio, Avatar, Box, Collapse, Flex, Icon, Link, SimpleGrid, Skeleton, SkeletonText, Text, Tooltip } from "@chakra-ui/react";
 
 import { Footer } from "./Footer";
 import { useGetLessonBySlugQuery } from '../graphql/generated';
+import { useState } from 'react';
 
 interface VideoProps {
   lessonSlug: string;
 }
 
 export const Video = ({ lessonSlug }: VideoProps) => {
+  const [show, setShow] = useState(false)
+
   const { data, loading, error } = useGetLessonBySlugQuery({
     variables: {
       slug: lessonSlug,
@@ -25,8 +28,12 @@ export const Video = ({ lessonSlug }: VideoProps) => {
     height: '100%',
     width: '100%',
     playerVars: {
-      disablekb: 1,
-      fs: 0,
+      disablekb: 0,
+      modestbranding: 1,
+      enablejsapi: 1,
+      showinfo: 0,
+      color: 'white',
+      rel: 0,
     },
   };
 
@@ -56,7 +63,7 @@ export const Video = ({ lessonSlug }: VideoProps) => {
         <Box flex="1" mt="2rem">
           <Flex justify="center">
             <AspectRatio w="full" h="full" maxW="1100px" maxH="60vh" ratio={16 / 9}>
-              <Youtube videoId={data.lesson.videoId} id={data.lesson.videoId} opts={opts} onReady={onPlayerReady} />
+              <Youtube videoId={data.lesson.videoId} key={data.lesson.videoId} id={data.lesson.videoId} opts={opts} onReady={onPlayerReady} />
             </AspectRatio>
           </Flex>
           
@@ -73,9 +80,17 @@ export const Video = ({ lessonSlug }: VideoProps) => {
                   {data.lesson.title}
                 </Text>
 
-                <Text mt="1rem" color="gray.200" lineHeight="1.625" textAlign="justify">
-                  {data.lesson.description}
-                </Text>
+                <Box mt="1rem">
+                  <Text color="gray.200" lineHeight="1.625" textAlign="justify" noOfLines={show ? 0 : 2}>
+                    {data.lesson.description}
+                  </Text>
+                  <Tooltip label={!show ? "Mostrar mais" : "Mostrar menos"}>
+                    <Icon as={!show ? DotsThreeOutline : ArrowUp} mt=".5rem" borderRadius="full" color="green.300" boxSize="1.5rem" _hover={{
+                      cursor: "pointer",
+                      bgColor: "gray.700",
+                    }} onClick={() => setShow(!show)} />
+                  </Tooltip>
+                </Box>
 
                 <Flex align="center" justify={{
                   base: "center",
@@ -116,7 +131,7 @@ export const Video = ({ lessonSlug }: VideoProps) => {
                 }} _hover={{
                   bg: "green.700",
                 }}>
-                  <Code size={24} />
+                  <Terminal size={24} />
                   Acesso o editor
                 </Link>
 

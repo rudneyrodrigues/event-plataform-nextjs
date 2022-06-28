@@ -36,7 +36,18 @@ export const Sidebar = () => {
   }
 
   return (
-    <Box w="348px" bg="gray.700" p="1.5rem" borderX="1px solid" borderColor="gray.500">
+    <Box w="348px" maxH="100vh" position="sticky" top="0" bg="gray.700" p="1.5rem" borderX="1px solid" borderColor="gray.500" overflowY="auto" css={{
+      '&::-webkit-scrollbar': {
+        width: '4px',
+      },
+      '&::-webkit-scrollbar-track': {
+        backgroundColor: '#121214',
+      },
+      '&::-webkit-scrollbar-thumb': {
+        backgroundColor: '#00875F',
+        borderRadius: '20px',
+      },
+    }}>
       <Text fontSize="2xl" fontWeight="bold" color="white" py="1.5rem" mb="1.5rem" borderBottom="1px solid" borderColor="gray.500">
         Cronograma de aulas
       </Text>
