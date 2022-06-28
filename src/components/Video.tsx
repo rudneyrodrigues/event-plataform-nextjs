@@ -1,6 +1,6 @@
 import Youtube, { YouTubeProps } from 'react-youtube';
 import { CaretRight, FileArrowDown, Lightning, Image, DotsThreeOutline, ArrowUp, Terminal } from "phosphor-react";
-import { AspectRatio, Avatar, Box, Collapse, Flex, Icon, Link, SimpleGrid, Skeleton, SkeletonText, Text, Tooltip } from "@chakra-ui/react";
+import { AspectRatio, Avatar, Box, Collapse, Flex, Icon, IconButton, Link, SimpleGrid, Skeleton, SkeletonText, Text, Tooltip, useBreakpointValue } from "@chakra-ui/react";
 
 import { Footer } from "./Footer";
 import { useGetLessonBySlugQuery } from '../graphql/generated';
@@ -81,15 +81,19 @@ export const Video = ({ lessonSlug }: VideoProps) => {
                 </Text>
 
                 <Box mt="1rem">
-                  <Text color="gray.200" lineHeight="1.625" textAlign="justify" noOfLines={show ? 0 : 2}>
+                  <Text mb=".5rem" color="gray.200" lineHeight="1.625" textAlign="justify" noOfLines={show ? 0 : {
+                    base: 3,
+                    sm: 2,
+                  }}>
                     {data.lesson.description}
                   </Text>
-                  <Tooltip label={!show ? "Mostrar mais" : "Mostrar menos"}>
-                    <Icon as={!show ? DotsThreeOutline : ArrowUp} mt=".5rem" borderRadius="full" color="green.300" boxSize="1.5rem" _hover={{
-                      cursor: "pointer",
-                      bgColor: "gray.700",
-                    }} onClick={() => setShow(!show)} />
-                  </Tooltip>
+
+                  <Text as="span" fontWeight="bold" onClick={() => setShow(!show)} transitionDuration=".2s" _hover={{
+                    cursor: "pointer",
+                    color: "green.300",
+                  }}>
+                    {!show ? "Mostrar mais" : "Mostrar menos"}
+                  </Text>
                 </Box>
 
                 <Flex align="center" justify={{
