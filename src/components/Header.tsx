@@ -16,7 +16,7 @@ export const Header = () => {
   });
 
   return (
-    <Box bgColor="gray.700" borderBottom="1px solid" borderColor="gray.500" py="1.25rem" px="1rem">
+    <Box position="sticky" top="0" bgColor="gray.700" borderBottom="1px solid" borderColor="gray.500" py="1.25rem" px="1rem" zIndex="20">
       <Flex w="full" maxW="container.xl" mx="auto" align="center" justify="center" gap=".5rem">
         <Logo />
 

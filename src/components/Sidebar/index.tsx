@@ -36,7 +36,7 @@ export const Sidebar = () => {
   }
 
   return (
-    <Box w="348px" maxH="100vh" position="sticky" top="0" bg="gray.700" p="1.5rem" borderX="1px solid" borderColor="gray.500" overflowY="auto" css={{
+    <Box w="348px" maxH="calc(100vh - 97px)" position="sticky" top="97px" bg="gray.700" p="1.5rem" borderX="1px solid" borderColor="gray.500" overflowY="auto" css={{
       '&::-webkit-scrollbar': {
         width: '4px',
       },
